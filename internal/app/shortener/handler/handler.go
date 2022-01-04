@@ -6,8 +6,12 @@ import (
 )
 
 const (
-	baseURL        = "http://localhost:8080"
-	locationHeader = "Location"
+	baseURL = "http://localhost:8080"
+
+	ContentTypeHeader = "Content-Type"
+	locationHeader    = "Location"
+
+	ContentTypeJSON = "application/json"
 )
 
 type handler struct {
@@ -22,6 +26,7 @@ func NewHandler(repository repository.Repository) *handler {
 	}
 
 	h.Post("/", h.shortURL())
+	h.Post("/api/shorten", h.apiShortURL())
 	h.Get("/{id:\\d+}", h.unshortURL())
 
 	return h

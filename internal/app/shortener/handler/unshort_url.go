@@ -8,7 +8,7 @@ import (
 
 func (h *handler) unshortURL() http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
-		id, err := h.idFromRequest(request)
+		id, err := h.unshortURLRequest(request)
 		if err != nil {
 			responseWriter.WriteHeader(http.StatusBadRequest)
 			return

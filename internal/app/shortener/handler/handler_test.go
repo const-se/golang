@@ -89,6 +89,41 @@ func TestHandler(t *testing.T) {
 			},
 		},
 		{
+			name: "Создание короткой ссылки (API)",
+			args: args{
+				method:      http.MethodPost,
+				path:        "/api/shorten",
+				requestBody: strings.NewReader(fmt.Sprintf("{\"url\":\"%s\"}", testURL)),
+			},
+			assertResponse: func(t *testing.T, response *http.Response, responseBody string) {
+				assert.Equal(t, http.StatusCreated, response.StatusCode)
+				assert.Equal(t, fmt.Sprintf("{\"result\":\"%s/%d\"}", baseURL, testID), responseBody)
+			},
+		},
+		{
+			name: "Пустой запрос на создание короткой ссылки (API)",
+			args: args{
+				method: http.MethodPost,
+				path:   "/api/shorten",
+			},
+			assertResponse: func(t *testing.T, response *http.Response, responseBody string) {
+				assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+				assert.Empty(t, responseBody)
+			},
+		},
+		{
+			name: "Некорректный запрос на создание короткой ссылки (API)",
+			args: args{
+				method:      http.MethodPost,
+				path:        "/api/shorten",
+				requestBody: strings.NewReader("{url}"),
+			},
+			assertResponse: func(t *testing.T, response *http.Response, responseBody string) {
+				assert.Equal(t, http.StatusBadRequest, response.StatusCode)
+				assert.Empty(t, responseBody)
+			},
+		},
+		{
 			name: "Получение исходной ссылки",
 			args: args{
 				method: http.MethodGet,

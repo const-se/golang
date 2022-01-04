@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -18,7 +20,7 @@ func Test_repository_URL(t *testing.T) {
 		fields  fields
 		args    args
 		want    string
-		wantErr bool
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "Получение ссылки",
@@ -31,7 +33,8 @@ func Test_repository_URL(t *testing.T) {
 			args: args{
 				id: 1,
 			},
-			want: "https://practicum.yandex.ru",
+			want:    "https://practicum.yandex.ru",
+			wantErr: assert.NoError,
 		},
 		{
 			name: "Получение несуществующей ссылки",
@@ -44,7 +47,7 @@ func Test_repository_URL(t *testing.T) {
 			args: args{
 				id: 2,
 			},
-			wantErr: true,
+			wantErr: assert.Error,
 		},
 	}
 
@@ -55,14 +58,11 @@ func Test_repository_URL(t *testing.T) {
 			}
 
 			got, err := r.URL(tt.args.id)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("URL() error = %v, wantErr %v", err, tt.wantErr)
+			if !tt.wantErr(t, err, fmt.Sprintf("URL(%v)", tt.args.id)) {
 				return
 			}
 
-			if got != tt.want {
-				t.Errorf("URL() got = %v, want %v", got, tt.want)
-			}
+			assert.Equalf(t, tt.want, got, "URL(%v)", tt.args.id)
 		})
 	}
 }

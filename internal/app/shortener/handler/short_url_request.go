@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (h *handler) urlFormRequest(request *http.Request) (string, error) {
+func (h *handler) shortURLRequest(request *http.Request) (string, error) {
 	defer func() {
 		_ = request.Body.Close()
 	}()

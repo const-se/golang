@@ -1,13 +1,15 @@
 package handler
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-func Test_handler_urlFormRequest(t *testing.T) {
+func Test_handler_shortURLRequest(t *testing.T) {
 	type args struct {
 		request *http.Request
 	}
@@ -16,20 +18,22 @@ func Test_handler_urlFormRequest(t *testing.T) {
 		name    string
 		args    args
 		want    string
-		wantErr bool
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "Корректный запрос",
 			args: args{
 				request: httptest.NewRequest(http.MethodPost, "/", strings.NewReader("https://practicum.yandex.ru")),
 			},
-			want: "https://practicum.yandex.ru",
+			want:    "https://practicum.yandex.ru",
+			wantErr: assert.NoError,
 		},
 		{
 			name: "Пустой запрос",
 			args: args{
 				request: httptest.NewRequest(http.MethodPost, "/", nil),
 			},
+			wantErr: assert.NoError,
 		},
 	}
 
@@ -37,15 +41,12 @@ func Test_handler_urlFormRequest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			h := &handler{}
 
-			got, err := h.urlFormRequest(tt.args.request)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("urlFormRequest() error = %v, wantErr %v", err, tt.wantErr)
+			got, err := h.shortURLRequest(tt.args.request)
+			if !tt.wantErr(t, err, fmt.Sprintf("shortURLRequest(%v)", tt.args.request)) {
 				return
 			}
 
-			if got != tt.want {
-				t.Errorf("urlFormRequest() got = %v, want %v", got, tt.want)
-			}
+			assert.Equalf(t, tt.want, got, "shortURLRequest(%v)", tt.args.request)
 		})
 	}
 }
