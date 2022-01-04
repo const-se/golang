@@ -25,6 +25,6 @@ func (h *handler) shortURL() http.HandlerFunc {
 		}
 
 		responseWriter.WriteHeader(http.StatusCreated)
-		_, _ = fmt.Fprintf(responseWriter, "%s/%d", baseURL, id)
+		_, _ = fmt.Fprintf(responseWriter, "%s/%d", h.baseURL, id)
 	}
 }

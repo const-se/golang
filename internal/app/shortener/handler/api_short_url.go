@@ -25,7 +25,7 @@ func (h *handler) apiShortURL() http.HandlerFunc {
 		}
 
 		response, err := h.apiShortURLResponse(APIShortURLResponse{
-			Result: fmt.Sprintf("%s/%d", baseURL, id),
+			Result: fmt.Sprintf("%s/%d", h.baseURL, id),
 		})
 		if err != nil {
 			responseWriter.WriteHeader(http.StatusInternalServerError)
