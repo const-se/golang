@@ -8,7 +8,7 @@ import (
 
 func Test_repository_SaveURL(t *testing.T) {
 	type fields struct {
-		storage []string
+		cache []string
 	}
 
 	type args struct {
@@ -25,7 +25,7 @@ func Test_repository_SaveURL(t *testing.T) {
 		{
 			name: "Добавление ссылки",
 			fields: fields{
-				storage: []string{
+				cache: []string{
 					"https://ya.ru",
 				},
 			},
@@ -40,7 +40,7 @@ func Test_repository_SaveURL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			r := &repository{
-				storage: tt.fields.storage,
+				cache: tt.fields.cache,
 			}
 
 			got, err := r.SaveURL(tt.args.url)

@@ -9,8 +9,9 @@ import (
 )
 
 type Config struct {
-	ServerAddress string `env:"SERVER_ADDRESS" envDefault:":8080"`
-	BaseURL       string `env:"BASE_URL" envDefault:"http://localhost:8080"`
+	ServerAddress   string `env:"SERVER_ADDRESS" envDefault:":8080"`
+	BaseURL         string `env:"BASE_URL" envDefault:"http://localhost:8080"`
+	FileStoragePath string `env:"FILE_STORAGE_PATH" envDefault:""`
 }
 
 func main() {
@@ -19,7 +20,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	h := handler.NewHandler(repository.NewRepository(), cfg.BaseURL)
+	r := repository.NewRepository(cfg.FileStoragePath)
+	h := handler.NewHandler(r, cfg.BaseURL)
 
 	log.Fatal(http.ListenAndServe(cfg.ServerAddress, h))
 }

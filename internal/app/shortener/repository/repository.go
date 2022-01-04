@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"log"
 	"sync"
 )
 
@@ -10,10 +11,19 @@ type Repository interface {
 }
 
 type repository struct {
-	storage []string
-	mutex   sync.Mutex
+	storagePath string
+	cache       []string
+	mutex       sync.Mutex
 }
 
-func NewRepository() Repository {
-	return new(repository)
+func NewRepository(storagePath string) Repository {
+	cache, err := load(storagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return &repository{
+		storagePath: storagePath,
+		cache:       cache,
+	}
 }

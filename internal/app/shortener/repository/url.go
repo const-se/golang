@@ -4,11 +4,11 @@ func (r *repository) URL(id int) (string, error) {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
 
-	if id >= len(r.storage) {
+	if id >= len(r.cache) {
 		return "", ErrURLNotFound
 	}
 
-	url := r.storage[id]
+	url := r.cache[id]
 
 	return url, nil
 }
