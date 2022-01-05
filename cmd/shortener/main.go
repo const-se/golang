@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/caarlos0/env/v6"
 	"github.com/const-se/golang/internal/app/shortener/handler"
 	"github.com/const-se/golang/internal/app/shortener/repository"
@@ -19,6 +20,11 @@ func main() {
 	if err := env.Parse(&cfg); err != nil {
 		log.Fatal(err)
 	}
+
+	flag.StringVar(&cfg.ServerAddress, "a", cfg.ServerAddress, "Server Address")
+	flag.StringVar(&cfg.BaseURL, "b", cfg.BaseURL, "Base URL")
+	flag.StringVar(&cfg.FileStoragePath, "f", cfg.FileStoragePath, "File Storage Path")
+	flag.Parse()
 
 	r := repository.NewRepository(cfg.FileStoragePath)
 	h := handler.NewHandler(r, cfg.BaseURL)
