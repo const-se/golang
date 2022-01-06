@@ -1,13 +1,14 @@
 package main
 
 import (
-	"github.com/const-se/golang/internal/app/handlers"
+	"github.com/const-se/golang/internal/app/shortener/handler"
+	"github.com/const-se/golang/internal/app/shortener/repository"
 	"log"
 	"net/http"
 )
 
 func main() {
-	handler := new(handlers.Shortener)
-	http.HandleFunc("/", handler.Handle)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	h := handler.NewHandler(repository.NewRepository())
+
+	log.Fatal(http.ListenAndServe(":8080", h))
 }
