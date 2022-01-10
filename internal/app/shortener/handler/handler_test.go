@@ -14,8 +14,9 @@ import (
 )
 
 const (
-	testID  = 123
-	testURL = "https://practicum.yandex.ru"
+	testID      = 123
+	testURL     = "https://practicum.yandex.ru"
+	testBaseURL = "http://localhost:8080"
 )
 
 type testRepository struct {
@@ -34,7 +35,7 @@ func (r *testRepository) SaveURL(_ string) (int, error) {
 }
 
 func TestHandler(t *testing.T) {
-	h := NewHandler(&testRepository{})
+	h := NewHandler(&testRepository{}, testBaseURL)
 	server := httptest.NewServer(h)
 	defer server.Close()
 	client := &http.Client{
@@ -63,7 +64,7 @@ func TestHandler(t *testing.T) {
 			},
 			assertResponse: func(t *testing.T, response *http.Response, responseBody string) {
 				assert.Equal(t, http.StatusCreated, response.StatusCode)
-				assert.Equal(t, fmt.Sprintf("%s/%d", baseURL, testID), responseBody)
+				assert.Equal(t, fmt.Sprintf("%s/%d", testBaseURL, testID), responseBody)
 			},
 		},
 		{
@@ -97,7 +98,7 @@ func TestHandler(t *testing.T) {
 			},
 			assertResponse: func(t *testing.T, response *http.Response, responseBody string) {
 				assert.Equal(t, http.StatusCreated, response.StatusCode)
-				assert.Equal(t, fmt.Sprintf("{\"result\":\"%s/%d\"}", baseURL, testID), responseBody)
+				assert.Equal(t, fmt.Sprintf("{\"result\":\"%s/%d\"}", testBaseURL, testID), responseBody)
 			},
 		},
 		{
