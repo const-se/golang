@@ -7,7 +7,7 @@ import (
 
 func (h *handler) shortURL() http.HandlerFunc {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
-		url, err := h.urlFormRequest(request)
+		url, err := h.shortURLRequest(request)
 		if err != nil {
 			responseWriter.WriteHeader(http.StatusBadRequest)
 			return

@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
-func Test_handler_idFromRequest(t *testing.T) {
+func Test_handler_unshortURLRequest(t *testing.T) {
 	type args struct {
 		request *http.Request
 	}
@@ -15,28 +17,29 @@ func Test_handler_idFromRequest(t *testing.T) {
 		name    string
 		args    args
 		want    int
-		wantErr bool
+		wantErr assert.ErrorAssertionFunc
 	}{
 		{
 			name: "Корректный запрос",
 			args: args{
 				request: httptest.NewRequest(http.MethodGet, "/123", nil),
 			},
-			want: 123,
+			want:    123,
+			wantErr: assert.NoError,
 		},
 		{
 			name: "Пустой запрос",
 			args: args{
 				request: httptest.NewRequest(http.MethodGet, "/", nil),
 			},
-			wantErr: true,
+			wantErr: assert.Error,
 		},
 		{
 			name: "Некорректный запрос",
 			args: args{
 				request: httptest.NewRequest(http.MethodGet, "/abc", nil),
 			},
-			wantErr: true,
+			wantErr: assert.Error,
 		},
 	}
 
@@ -44,15 +47,12 @@ func Test_handler_idFromRequest(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			h := &handler{}
 
-			got, err := h.idFromRequest(tt.args.request)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("idFromRequest() error = %v, wantErr %v", err, tt.wantErr)
+			got, err := h.unshortURLRequest(tt.args.request)
+			if !tt.wantErr(t, err, fmt.Sprintf("unshortURLRequest(%v)", tt.args.request)) {
 				return
 			}
 
-			if got != tt.want {
-				t.Errorf("idFromRequest() got = %v, want %v", got, tt.want)
-			}
+			assert.Equalf(t, tt.want, got, "unshortURLRequest(%v)", tt.args.request)
 		})
 	}
 }
